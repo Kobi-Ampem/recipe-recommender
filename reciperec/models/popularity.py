@@ -11,7 +11,7 @@ import scipy.sparse as sp
 
 
 class Popularity:
-    def fit(self, train: sp.csr_matrix) -> "Popularity":
+    def fit(self, train: sp.csr_matrix) -> Popularity:
         self.counts = np.asarray(train.sum(axis=0)).ravel().astype(np.float32)
         return self
 
