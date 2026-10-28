@@ -6,8 +6,8 @@ __pycache__/
 .ruff_cache/
 
 # Datasets are downloaded by scripts, never committed (licences forbid redistribution)
-data/
+/data/
 
 # Trained models and run outputs
-models/
-runs/
+/models/
+/runs/
