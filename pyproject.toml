@@ -1,0 +1,22 @@
+[project]
+name = "recipe-recommender"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2",
+    "pandas>=2.2",
+    "scikit-learn>=1.5",
+    "scipy>=1.13",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "ruff>=0.17.3",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
