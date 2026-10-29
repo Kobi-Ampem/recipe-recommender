@@ -34,6 +34,37 @@ def settings(model: str, dataset: str, tuned: dict | None) -> str:
     return ", ".join(f"{k} {v}" for k, v in params.items())
 
 
+def slices_section(results: dict) -> list[str]:
+    models = [m for m in ORDER if "slices" in results.get(m, {})]
+    if not models:
+        return []
+    bins = list(results[models[0]]["slices"]["by_activity"])
+    head = "| Training interactions per user | Users | " + " | ".join(NAMES[m] for m in models)
+    lines = [
+        "",
+        "**Test NDCG@10 by user activity**",
+        "",
+        head + " |",
+        "|---|---:|" + "---:|" * len(models),
+    ]
+    for b in bins:
+        cells = [results[m]["slices"]["by_activity"].get(b, {}).get("ndcg@10") for m in models]
+        users = results[models[0]]["slices"]["by_activity"][b]["users"]
+        lines.append(
+            f"| {b} | {users:,} | "
+            + " | ".join("" if c is None else f"{c:.4f}" for c in cells)
+            + " |"
+        )
+    lines += [
+        "",
+        "**Popularity bias**: share of top-10 recommendations from the most popular 1% of "
+        "recipes in training: "
+        + ", ".join(f"{NAMES[m]} {results[m]['slices']['top1pct_share']:.0%}" for m in models)
+        + ".",
+    ]
+    return lines
+
+
 def dataset_section(key: str, title: str) -> list[str]:
     run = load(RUNS_DIR / f"{key}.json")
     if not run:
@@ -66,6 +97,7 @@ def dataset_section(key: str, title: str) -> list[str]:
         lines += ["", f"Beat popularity on test NDCG@10: {', '.join(beat) or 'none'}."]
         if lost:
             lines += [f"Did not beat popularity: {', '.join(lost)}."]
+    lines += slices_section(results)
     if key == "ml-1m":
         lines += [
             "",

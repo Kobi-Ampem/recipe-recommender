@@ -19,8 +19,9 @@ from pathlib import Path
 import pandas as pd
 
 from reciperec.data import LOADERS, Interactions
-from reciperec.metrics import evaluate
+from reciperec.metrics import evaluate_detailed
 from reciperec.models import MODELS
+from reciperec.slices import slice_metrics
 from reciperec.split import to_csr, train_val_test_split
 
 RUNS_DIR = Path(__file__).resolve().parent.parent / "runs"
@@ -39,7 +40,9 @@ def stage_matrices(data: Interactions, stage: str, test_frac: float = 0.2, val_f
     )
 
 
-def run_one(name: str, params: dict, fit, score, k: int = 10, early_stop: bool = False) -> dict:
+def run_one(
+    name: str, params: dict, fit, score, k: int = 10, early_stop: bool = False, slices: bool = False
+) -> dict:
     """Fit one model and return its metrics, settings and timings.
 
     With early_stop (validation stage only), models that support it watch
@@ -53,11 +56,13 @@ def run_one(name: str, params: dict, fit, score, k: int = 10, early_stop: bool =
         model.fit(fit)
     fit_s = time.perf_counter() - start
     start = time.perf_counter()
-    metrics = evaluate(model, fit, score, k=k)
+    metrics, users, per_user, tops = evaluate_detailed(model, fit, score, k=k)
     metrics["fit_seconds"] = round(fit_s, 2)
     metrics["score_seconds"] = round(time.perf_counter() - start, 2)
     metrics["params"] = params
     metrics.update(getattr(model, "fit_info", {}))
+    if slices:
+        metrics["slices"] = slice_metrics(fit, users, per_user, tops)
     return metrics
 
 
@@ -105,7 +110,9 @@ def main() -> None:
     saved = json.loads(out.read_text()) if out and out.exists() else {"results": {}}
     for name in args.model:
         params = tuned_params(data.name, name) if args.tuned else args.params
-        metrics = run_one(name, params, fit, score, args.k, args.stage == "val")
+        metrics = run_one(
+            name, params, fit, score, args.k, args.stage == "val", args.stage == "test"
+        )
         print(f"  {name:<12} {fmt(metrics)}  fit {metrics['fit_seconds']}s")
         saved["results"][name] = metrics
 
