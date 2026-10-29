@@ -20,7 +20,6 @@ from __future__ import annotations
 
 import numpy as np
 import scipy.sparse as sp
-from sklearn.metrics.pairwise import cosine_similarity
 
 
 class ItemKNN:
@@ -33,12 +32,15 @@ class ItemKNN:
         items = train.T.tocsr()  # one row per item
         n = items.shape[0]
         k = min(self.neighbors, n - 1)
+        # Binary data: cosine = shared reviewers / sqrt(reviewers of a * reviewers of b)
+        items_t = items.T.tocsc()
+        norms = np.sqrt(np.diff(items.indptr)).astype(np.float32)
         rows, cols, vals = [], [], []
         for start in range(0, n, self.chunk):
             stop = min(start + self.chunk, n)
-            sims = cosine_similarity(items[start:stop], items, dense_output=True)
+            overlap = (items[start:stop] @ items_t).toarray()  # shared reviewers
+            sims = overlap / np.maximum(norms[start:stop, None] * norms[None, :], 1e-12)
             if self.shrink:
-                overlap = (items[start:stop] @ items.T).toarray()  # shared reviewers
                 sims *= overlap / (overlap + self.shrink)
             sims[np.arange(stop - start), np.arange(start, stop)] = 0.0  # not your own neighbour
             top = np.argpartition(-sims, kth=k - 1, axis=1)[:, :k]
