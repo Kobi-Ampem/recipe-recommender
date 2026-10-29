@@ -11,6 +11,7 @@ Test is the final exam: score it once per model, with settings chosen on val.
 from __future__ import annotations
 
 import argparse
+import inspect
 import json
 import time
 from pathlib import Path
@@ -38,16 +39,25 @@ def stage_matrices(data: Interactions, stage: str, test_frac: float = 0.2, val_f
     )
 
 
-def run_one(name: str, params: dict, fit, score, k: int = 10) -> dict:
-    """Fit one model and return its metrics, settings and timings."""
+def run_one(name: str, params: dict, fit, score, k: int = 10, early_stop: bool = False) -> dict:
+    """Fit one model and return its metrics, settings and timings.
+
+    With early_stop (validation stage only), models that support it watch
+    the score matrix while training. Never pass it for test.
+    """
+    model = MODELS[name](**params)
     start = time.perf_counter()
-    model = MODELS[name](**params).fit(fit)
+    if early_stop and "val" in inspect.signature(model.fit).parameters:
+        model.fit(fit, val=score)
+    else:
+        model.fit(fit)
     fit_s = time.perf_counter() - start
     start = time.perf_counter()
     metrics = evaluate(model, fit, score, k=k)
     metrics["fit_seconds"] = round(fit_s, 2)
     metrics["score_seconds"] = round(time.perf_counter() - start, 2)
     metrics["params"] = params
+    metrics.update(getattr(model, "fit_info", {}))
     return metrics
 
 
@@ -77,7 +87,7 @@ def main() -> None:
     out = RUNS_DIR / f"{data.name}.json" if args.stage == "test" else None
     saved = json.loads(out.read_text()) if out and out.exists() else {"results": {}}
     for name in args.model:
-        metrics = run_one(name, args.params, fit, score, args.k)
+        metrics = run_one(name, args.params, fit, score, args.k, args.stage == "val")
         print(f"  {name:<12} {fmt(metrics)}  fit {metrics['fit_seconds']}s")
         saved["results"][name] = metrics
 
