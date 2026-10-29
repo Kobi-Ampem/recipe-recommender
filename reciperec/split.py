@@ -29,6 +29,21 @@ def temporal_user_split(
     return df[~is_test], df[is_test]
 
 
+def train_val_test_split(
+    df: pd.DataFrame, test_frac: float = 0.2, val_frac: float = 0.2
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Three slices of each user's timeline: oldest train, then validation, then test.
+
+    Settings are chosen by validation score, and test is scored once with
+    the chosen settings. Picking settings on test would tune the model to
+    the exam. Validation is cut from train the same way test is cut from
+    the whole, so it also sits after everything the model trains on.
+    """
+    rest, test = temporal_user_split(df, test_frac)
+    train, val = temporal_user_split(rest, val_frac)
+    return train, val, test
+
+
 def to_csr(df: pd.DataFrame, n_users: int, n_items: int) -> sp.csr_matrix:
     """Binary user x item matrix."""
     data = np.ones(len(df), dtype=np.float32)
