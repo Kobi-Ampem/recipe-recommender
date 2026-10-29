@@ -61,6 +61,18 @@ def run_one(name: str, params: dict, fit, score, k: int = 10, early_stop: bool =
     return metrics
 
 
+def tuned_params(dataset: str, model: str) -> dict:
+    """Best validation settings. A model that stopped early trains for its best epoch count."""
+    path = RUNS_DIR / f"tuning-{dataset}-{model}.json"
+    if not path.exists():
+        raise SystemExit(f"{path.name} not found: run reciperec.tune for {model} first")
+    best = json.loads(path.read_text())["best"]
+    params = dict(best["params"])
+    if "best_epoch" in best:
+        params["epochs"] = best["best_epoch"]
+    return params
+
+
 def fmt(metrics: dict) -> str:
     return "  ".join(f"{m} {v:.4f}" for m, v in metrics.items() if "@" in m)
 
@@ -72,9 +84,14 @@ def main() -> None:
     parser.add_argument("--params", type=json.loads, default={}, help="JSON, for one model")
     parser.add_argument("--stage", choices=["val", "test"], default="test")
     parser.add_argument("--k", type=int, default=10)
+    parser.add_argument(
+        "--tuned", action="store_true", help="use the best settings from reciperec.tune"
+    )
     args = parser.parse_args()
-    if args.params and len(args.model) > 1:
-        parser.error("--params applies to one model at a time")
+    if args.params and (len(args.model) > 1 or args.tuned):
+        parser.error("--params applies to one model at a time, without --tuned")
+    if args.tuned and args.stage != "test":
+        parser.error("--tuned is for the final test run")
 
     data = LOADERS[args.dataset]()
     fit, score = stage_matrices(data, args.stage)
@@ -87,7 +104,8 @@ def main() -> None:
     out = RUNS_DIR / f"{data.name}.json" if args.stage == "test" else None
     saved = json.loads(out.read_text()) if out and out.exists() else {"results": {}}
     for name in args.model:
-        metrics = run_one(name, args.params, fit, score, args.k, args.stage == "val")
+        params = tuned_params(data.name, name) if args.tuned else args.params
+        metrics = run_one(name, params, fit, score, args.k, args.stage == "val")
         print(f"  {name:<12} {fmt(metrics)}  fit {metrics['fit_seconds']}s")
         saved["results"][name] = metrics
 
