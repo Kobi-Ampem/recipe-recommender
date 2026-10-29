@@ -18,3 +18,14 @@ def test_slices_bin_users_and_measure_popularity_share():
     assert out["by_activity"]["1-4"] == {"users": 2, "ndcg@10": 0.25}
     assert out["by_activity"]["10-19"]["ndcg@10"] == 1.0
     assert out["top1pct_share"] == 3 / 9
+
+
+def test_bootstrap_separates_real_gain_from_noise():
+    from reciperec.slices import paired_bootstrap
+
+    rng = np.random.default_rng(1)
+    base = rng.random(2000)
+    assert paired_bootstrap(base * 1.5, base)["significant"]
+    noisy = paired_bootstrap(base + rng.normal(0, 0.3, 2000), base)
+    assert not noisy["significant"]
+    assert noisy["ci95"][0] < 0 < noisy["ci95"][1]

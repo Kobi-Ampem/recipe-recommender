@@ -70,12 +70,11 @@ def dataset_section(key: str, title: str) -> list[str]:
     if not run:
         return [f"## {title}", "", "No test run saved yet.", ""]
     results = run["results"]
-    base = results.get("popularity", {}).get("ndcg@10")
     lines = [
         f"## {title}",
         "",
         (
-            "| Model | P@10 | R@10 | NDCG@10 | vs popularity | Coverage@10 | Val NDCG@10 "
+            "| Model | P@10 | R@10 | NDCG@10 | vs popularity [95% CI] | Coverage@10 | Val NDCG@10 "
             "| Settings (chosen on validation) | Fit |"
         ),
         "|---|---:|---:|---:|---:|---:|---:|---|---:|",
@@ -83,7 +82,11 @@ def dataset_section(key: str, title: str) -> list[str]:
     for model in [m for m in ORDER if m in results]:
         r = results[model]
         tuned = load(RUNS_DIR / f"tuning-{key}-{model}.json")
-        lift = f"{r['ndcg@10'] / base - 1:+.0%}" if base and model != "popularity" else ""
+        lift = ""
+        if "vs_popularity" in r:
+            v = r["vs_popularity"]
+            lo, hi = v["ci95"]
+            lift = f"{v['gain']:+.0%} [{lo:+.0%}, {hi:+.0%}]" + ("" if v["significant"] else " ns")
         val = f"{tuned['best']['ndcg@10']:.4f}" if tuned else ""
         lines.append(
             f"| {NAMES[model]} | {r['precision@10']:.4f} | {r['recall@10']:.4f} "
@@ -91,12 +94,36 @@ def dataset_section(key: str, title: str) -> list[str]:
             f"| {settings(model, key, tuned)} | {r['fit_seconds']:.0f} s |"
         )
     lines += ["", f"{results[ORDER[0]]['users']:,} test users." if "popularity" in results else ""]
-    if base:
-        beat = [NAMES[m] for m in ORDER[1:] if m in results and results[m]["ndcg@10"] > base]
-        lost = [NAMES[m] for m in ORDER[1:] if m in results and results[m]["ndcg@10"] <= base]
-        lines += ["", f"Beat popularity on test NDCG@10: {', '.join(beat) or 'none'}."]
-        if lost:
-            lines += [f"Did not beat popularity: {', '.join(lost)}."]
+    compared = [m for m in ORDER[1:] if "vs_popularity" in results.get(m, {})]
+    if compared:
+        sig = [NAMES[m] for m in compared if results[m]["vs_popularity"]["ci95"][0] > 0]
+        rest = [NAMES[m] for m in compared if results[m]["vs_popularity"]["ci95"][0] <= 0]
+        lines += [
+            "",
+            (
+                '"vs popularity" is the relative NDCG@10 gain with a 95% paired bootstrap '
+                "interval over test users (2,000 resamples); ns means the interval includes 0."
+            ),
+            "",
+            f"Beat popularity beyond chance: {', '.join(sig) or 'none'}.",
+        ]
+        if rest:
+            lines += [f"Not distinguishable from popularity: {', '.join(rest)}."]
+        vals = {
+            m: load(RUNS_DIR / f"tuning-{key}-{m}.json")["best"]["ndcg@10"]
+            for m in results
+            if (RUNS_DIR / f"tuning-{key}-{m}.json").exists()
+        }
+        best_val = max(vals, key=vals.get) if vals else None
+        best_test = max(results, key=lambda m: results[m]["ndcg@10"])
+        if best_val and best_val != best_test:
+            lines += [
+                "",
+                (
+                    f"Best on validation: {NAMES[best_val]}; best on test: {NAMES[best_test]}. "
+                    "Settings were fixed on validation and not changed after the test run."
+                ),
+            ]
     lines += slices_section(results)
     if key == "ml-1m":
         lines += [

@@ -21,7 +21,7 @@ import pandas as pd
 from reciperec.data import LOADERS, Interactions
 from reciperec.metrics import evaluate_detailed
 from reciperec.models import MODELS
-from reciperec.slices import slice_metrics
+from reciperec.slices import paired_bootstrap, slice_metrics
 from reciperec.split import to_csr, train_val_test_split
 
 RUNS_DIR = Path(__file__).resolve().parent.parent / "runs"
@@ -63,6 +63,7 @@ def run_one(
     metrics.update(getattr(model, "fit_info", {}))
     if slices:
         metrics["slices"] = slice_metrics(fit, users, per_user, tops)
+        metrics["_per_user"] = per_user
     return metrics
 
 
@@ -108,13 +109,22 @@ def main() -> None:
     RUNS_DIR.mkdir(exist_ok=True)
     out = RUNS_DIR / f"{data.name}.json" if args.stage == "test" else None
     saved = json.loads(out.read_text()) if out and out.exists() else {"results": {}}
+    per_user = {}
     for name in args.model:
         params = tuned_params(data.name, name) if args.tuned else args.params
         metrics = run_one(
             name, params, fit, score, args.k, args.stage == "val", args.stage == "test"
         )
         print(f"  {name:<12} {fmt(metrics)}  fit {metrics['fit_seconds']}s")
+        per_user[name] = metrics.pop("_per_user", None)
         saved["results"][name] = metrics
+
+    if "popularity" in per_user:
+        for name, scores in per_user.items():
+            if name != "popularity" and scores is not None:
+                saved["results"][name]["vs_popularity"] = paired_bootstrap(
+                    scores, per_user["popularity"]
+                )
 
     if out:
         saved.update(dataset=data.name, k=args.k, test_frac=0.2, val_frac=0.2)

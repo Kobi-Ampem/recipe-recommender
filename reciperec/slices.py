@@ -37,3 +37,24 @@ def slice_metrics(
     is_top = np.zeros(len(counts), dtype=bool)
     is_top[np.argsort(-counts, kind="stable")[:n_top]] = True
     return {"by_activity": by_activity, "top1pct_share": float(is_top[tops].mean())}
+
+
+def paired_bootstrap(
+    model: np.ndarray, baseline: np.ndarray, n_boot: int = 2000, seed: int = 0
+) -> dict:
+    """Relative NDCG gain over the baseline with a 95% interval, resampling users.
+
+    Both arrays are per-user scores on the same users in the same order.
+    Resampling users together keeps the pairing: each draw asks "on this
+    set of users, how much better is the model?". If the whole interval is
+    above 0, the gain is unlikely to be luck.
+    """
+    rng = np.random.default_rng(seed)
+    idx = rng.integers(0, len(model), size=(n_boot, len(model)))
+    gains = model[idx].mean(axis=1) / baseline[idx].mean(axis=1) - 1
+    lo, hi = np.percentile(gains, [2.5, 97.5])
+    return {
+        "gain": float(model.mean() / baseline.mean() - 1),
+        "ci95": [float(lo), float(hi)],
+        "significant": bool(lo > 0 or hi < 0),
+    }
