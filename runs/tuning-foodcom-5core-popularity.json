@@ -1,0 +1,26 @@
+{
+  "dataset": "foodcom-5core",
+  "model": "popularity",
+  "best": {
+    "precision@10": 0.006040532195587493,
+    "recall@10": 0.023632517347499847,
+    "ndcg@10": 0.014379881484701576,
+    "coverage@10": 0.0010184287099903008,
+    "users": 17813,
+    "fit_seconds": 0.0,
+    "score_seconds": 13.76,
+    "params": {}
+  },
+  "runs": [
+    {
+      "precision@10": 0.006040532195587493,
+      "recall@10": 0.023632517347499847,
+      "ndcg@10": 0.014379881484701576,
+      "coverage@10": 0.0010184287099903008,
+      "users": 17813,
+      "fit_seconds": 0.0,
+      "score_seconds": 13.76,
+      "params": {}
+    }
+  ]
+}

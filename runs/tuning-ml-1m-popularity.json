@@ -1,0 +1,26 @@
+{
+  "dataset": "ml-1m",
+  "model": "popularity",
+  "best": {
+    "precision@10": 0.08399006622516555,
+    "recall@10": 0.04202711250478142,
+    "ndcg@10": 0.09328609160291772,
+    "coverage@10": 0.02644360496492175,
+    "users": 6040,
+    "fit_seconds": 0.0,
+    "score_seconds": 0.22,
+    "params": {}
+  },
+  "runs": [
+    {
+      "precision@10": 0.08399006622516555,
+      "recall@10": 0.04202711250478142,
+      "ndcg@10": 0.09328609160291772,
+      "coverage@10": 0.02644360496492175,
+      "users": 6040,
+      "fit_seconds": 0.0,
+      "score_seconds": 0.22,
+      "params": {}
+    }
+  ]
+}

@@ -1,0 +1,331 @@
+{
+  "dataset": "ml-1m",
+  "model": "itemknn",
+  "best": {
+    "precision@10": 0.11630794701986755,
+    "recall@10": 0.07606646667698116,
+    "ndcg@10": 0.13182704096503023,
+    "coverage@10": 0.1397733405288721,
+    "users": 6040,
+    "fit_seconds": 0.41,
+    "score_seconds": 1.37,
+    "params": {
+      "neighbors": 1000,
+      "shrink": 0
+    }
+  },
+  "runs": [
+    {
+      "precision@10": 0.10922185430463577,
+      "recall@10": 0.07923855126170326,
+      "ndcg@10": 0.12575474021393826,
+      "coverage@10": 0.19454937938478142,
+      "users": 6040,
+      "fit_seconds": 0.27,
+      "score_seconds": 0.23,
+      "params": {
+        "neighbors": 20,
+        "shrink": 0
+      }
+    },
+    {
+      "precision@10": 0.10890728476821193,
+      "recall@10": 0.07384831875214329,
+      "ndcg@10": 0.12470371331186089,
+      "coverage@10": 0.11198057204533189,
+      "users": 6040,
+      "fit_seconds": 0.68,
+      "score_seconds": 0.2,
+      "params": {
+        "neighbors": 20,
+        "shrink": 50
+      }
+    },
+    {
+      "precision@10": 0.10551324503311257,
+      "recall@10": 0.06670726166212464,
+      "ndcg@10": 0.1217269370183129,
+      "coverage@10": 0.07069616837560712,
+      "users": 6040,
+      "fit_seconds": 0.68,
+      "score_seconds": 0.2,
+      "params": {
+        "neighbors": 20,
+        "shrink": 200
+      }
+    },
+    {
+      "precision@10": 0.10311258278145695,
+      "recall@10": 0.062448392708341106,
+      "ndcg@10": 0.11874254484060782,
+      "coverage@10": 0.05504587155963303,
+      "users": 6040,
+      "fit_seconds": 0.68,
+      "score_seconds": 0.19,
+      "params": {
+        "neighbors": 20,
+        "shrink": 500
+      }
+    },
+    {
+      "precision@10": 0.11172185430463576,
+      "recall@10": 0.07688827031940562,
+      "ndcg@10": 0.12807888927978575,
+      "coverage@10": 0.1770102536427415,
+      "users": 6040,
+      "fit_seconds": 0.27,
+      "score_seconds": 0.31,
+      "params": {
+        "neighbors": 50,
+        "shrink": 0
+      }
+    },
+    {
+      "precision@10": 0.1096523178807947,
+      "recall@10": 0.06994885200734446,
+      "ndcg@10": 0.12579224269157385,
+      "coverage@10": 0.0930922827846735,
+      "users": 6040,
+      "fit_seconds": 0.68,
+      "score_seconds": 0.27,
+      "params": {
+        "neighbors": 50,
+        "shrink": 50
+      }
+    },
+    {
+      "precision@10": 0.1055794701986755,
+      "recall@10": 0.0635054722115202,
+      "ndcg@10": 0.12079180959525226,
+      "coverage@10": 0.05693470048569887,
+      "users": 6040,
+      "fit_seconds": 0.68,
+      "score_seconds": 0.26,
+      "params": {
+        "neighbors": 50,
+        "shrink": 200
+      }
+    },
+    {
+      "precision@10": 0.10251655629139074,
+      "recall@10": 0.06029016481968431,
+      "ndcg@10": 0.11820356287070594,
+      "coverage@10": 0.044522396114409064,
+      "users": 6040,
+      "fit_seconds": 0.68,
+      "score_seconds": 0.26,
+      "params": {
+        "neighbors": 50,
+        "shrink": 500
+      }
+    },
+    {
+      "precision@10": 0.11317880794701987,
+      "recall@10": 0.07485304344184379,
+      "ndcg@10": 0.1297947314886793,
+      "coverage@10": 0.1559633027522936,
+      "users": 6040,
+      "fit_seconds": 0.28,
+      "score_seconds": 0.41,
+      "params": {
+        "neighbors": 100,
+        "shrink": 0
+      }
+    },
+    {
+      "precision@10": 0.10920529801324505,
+      "recall@10": 0.06625567664349885,
+      "ndcg@10": 0.12454641077097399,
+      "coverage@10": 0.0747436589314625,
+      "users": 6040,
+      "fit_seconds": 0.69,
+      "score_seconds": 0.35,
+      "params": {
+        "neighbors": 100,
+        "shrink": 50
+      }
+    },
+    {
+      "precision@10": 0.10677152317880795,
+      "recall@10": 0.0633572688863476,
+      "ndcg@10": 0.12273539405998984,
+      "coverage@10": 0.04883971937398813,
+      "users": 6040,
+      "fit_seconds": 0.69,
+      "score_seconds": 0.33,
+      "params": {
+        "neighbors": 100,
+        "shrink": 200
+      }
+    },
+    {
+      "precision@10": 0.10549668874172186,
+      "recall@10": 0.062030871823362664,
+      "ndcg@10": 0.12050672531636905,
+      "coverage@10": 0.039665407447382624,
+      "users": 6040,
+      "fit_seconds": 0.69,
+      "score_seconds": 0.33,
+      "params": {
+        "neighbors": 100,
+        "shrink": 500
+      }
+    },
+    {
+      "precision@10": 0.11240066225165564,
+      "recall@10": 0.0719067013823269,
+      "ndcg@10": 0.1277542449155996,
+      "coverage@10": 0.13518618456556936,
+      "users": 6040,
+      "fit_seconds": 0.3,
+      "score_seconds": 0.56,
+      "params": {
+        "neighbors": 200,
+        "shrink": 0
+      }
+    },
+    {
+      "precision@10": 0.11157284768211922,
+      "recall@10": 0.06722897089862913,
+      "ndcg@10": 0.12737552366968324,
+      "coverage@10": 0.0715056664867782,
+      "users": 6040,
+      "fit_seconds": 0.7,
+      "score_seconds": 0.49,
+      "params": {
+        "neighbors": 200,
+        "shrink": 50
+      }
+    },
+    {
+      "precision@10": 0.10804635761589404,
+      "recall@10": 0.06468041966772015,
+      "ndcg@10": 0.12450774195855194,
+      "coverage@10": 0.05369670804101457,
+      "users": 6040,
+      "fit_seconds": 0.71,
+      "score_seconds": 0.47,
+      "params": {
+        "neighbors": 200,
+        "shrink": 200
+      }
+    },
+    {
+      "precision@10": 0.10609271523178807,
+      "recall@10": 0.06271276776740115,
+      "ndcg@10": 0.12162709854659638,
+      "coverage@10": 0.04263356718834323,
+      "users": 6040,
+      "fit_seconds": 0.71,
+      "score_seconds": 0.46,
+      "params": {
+        "neighbors": 200,
+        "shrink": 500
+      }
+    },
+    {
+      "precision@10": 0.11566225165562914,
+      "recall@10": 0.07416479520449835,
+      "ndcg@10": 0.13090568711786843,
+      "coverage@10": 0.13221802482460873,
+      "users": 6040,
+      "fit_seconds": 0.33,
+      "score_seconds": 0.89,
+      "params": {
+        "neighbors": 500,
+        "shrink": 0
+      }
+    },
+    {
+      "precision@10": 0.11316225165562915,
+      "recall@10": 0.07071856390355173,
+      "ndcg@10": 0.1289754687992144,
+      "coverage@10": 0.07960064759848894,
+      "users": 6040,
+      "fit_seconds": 0.75,
+      "score_seconds": 0.81,
+      "params": {
+        "neighbors": 500,
+        "shrink": 50
+      }
+    },
+    {
+      "precision@10": 0.10844370860927152,
+      "recall@10": 0.06588008297835678,
+      "ndcg@10": 0.12507951750712643,
+      "coverage@10": 0.05774419859686994,
+      "users": 6040,
+      "fit_seconds": 0.75,
+      "score_seconds": 0.8,
+      "params": {
+        "neighbors": 500,
+        "shrink": 200
+      }
+    },
+    {
+      "precision@10": 0.10591059602649007,
+      "recall@10": 0.06294407409358763,
+      "ndcg@10": 0.12163450011669008,
+      "coverage@10": 0.04317323259579061,
+      "users": 6040,
+      "fit_seconds": 0.75,
+      "score_seconds": 0.8,
+      "params": {
+        "neighbors": 500,
+        "shrink": 500
+      }
+    },
+    {
+      "precision@10": 0.11630794701986755,
+      "recall@10": 0.07606646667698116,
+      "ndcg@10": 0.13182704096503023,
+      "coverage@10": 0.1397733405288721,
+      "users": 6040,
+      "fit_seconds": 0.41,
+      "score_seconds": 1.37,
+      "params": {
+        "neighbors": 1000,
+        "shrink": 0
+      }
+    },
+    {
+      "precision@10": 0.11309602649006625,
+      "recall@10": 0.07101620762868888,
+      "ndcg@10": 0.12891568378285315,
+      "coverage@10": 0.08175930922827847,
+      "users": 6040,
+      "fit_seconds": 0.82,
+      "score_seconds": 1.3,
+      "params": {
+        "neighbors": 1000,
+        "shrink": 50
+      }
+    },
+    {
+      "precision@10": 0.10842715231788079,
+      "recall@10": 0.06595669956473728,
+      "ndcg@10": 0.1250634091065912,
+      "coverage@10": 0.05774419859686994,
+      "users": 6040,
+      "fit_seconds": 0.82,
+      "score_seconds": 1.3,
+      "params": {
+        "neighbors": 1000,
+        "shrink": 200
+      }
+    },
+    {
+      "precision@10": 0.10596026490066225,
+      "recall@10": 0.06294399740843767,
+      "ndcg@10": 0.1216671573881578,
+      "coverage@10": 0.042903399892066915,
+      "users": 6040,
+      "fit_seconds": 0.82,
+      "score_seconds": 1.29,
+      "params": {
+        "neighbors": 1000,
+        "shrink": 500
+      }
+    }
+  ]
+}

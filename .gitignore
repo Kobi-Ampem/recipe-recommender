@@ -8,6 +8,6 @@ __pycache__/
 # Datasets are downloaded by scripts, never committed (licences forbid redistribution)
 /data/
 
-# Trained models and run outputs
+# Trained models; run logs. Run results (runs/*.json: scores and settings, no data) are committed.
 /models/
-/runs/
+/runs/*.log

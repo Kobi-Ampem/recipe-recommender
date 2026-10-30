@@ -1,0 +1,102 @@
+{
+  "dataset": "foodcom-5core",
+  "model": "puresvd",
+  "best": {
+    "precision@10": 0.0059057991354628655,
+    "recall@10": 0.022027124483185175,
+    "ndcg@10": 0.014232623247690283,
+    "coverage@10": 0.05135790494665374,
+    "users": 17813,
+    "fit_seconds": 1.05,
+    "score_seconds": 12.48,
+    "params": {
+      "factors": 32
+    }
+  },
+  "runs": [
+    {
+      "precision@10": 0.0058440464829057435,
+      "recall@10": 0.021655945195737502,
+      "ndcg@10": 0.013231795449889018,
+      "coverage@10": 0.004000969932104753,
+      "users": 17813,
+      "fit_seconds": 0.23,
+      "score_seconds": 12.02,
+      "params": {
+        "factors": 4
+      }
+    },
+    {
+      "precision@10": 0.005855274237916129,
+      "recall@10": 0.021862598913257522,
+      "ndcg@10": 0.013443829734850718,
+      "coverage@10": 0.01265761396702231,
+      "users": 17813,
+      "fit_seconds": 0.26,
+      "score_seconds": 12.29,
+      "params": {
+        "factors": 8
+      }
+    },
+    {
+      "precision@10": 0.005922640767978443,
+      "recall@10": 0.021680812774535957,
+      "ndcg@10": 0.013840828581301503,
+      "coverage@10": 0.02902521823472357,
+      "users": 17813,
+      "fit_seconds": 0.46,
+      "score_seconds": 12.28,
+      "params": {
+        "factors": 16
+      }
+    },
+    {
+      "precision@10": 0.0059057991354628655,
+      "recall@10": 0.022027124483185175,
+      "ndcg@10": 0.014232623247690283,
+      "coverage@10": 0.05135790494665374,
+      "users": 17813,
+      "fit_seconds": 1.05,
+      "score_seconds": 12.48,
+      "params": {
+        "factors": 32
+      }
+    },
+    {
+      "precision@10": 0.005641946892718801,
+      "recall@10": 0.020631247699348,
+      "ndcg@10": 0.013153258877126983,
+      "coverage@10": 0.06913191076624636,
+      "users": 17813,
+      "fit_seconds": 1.26,
+      "score_seconds": 11.39,
+      "params": {
+        "factors": 64
+      }
+    },
+    {
+      "precision@10": 0.004743726491887947,
+      "recall@10": 0.01660683763484247,
+      "ndcg@10": 0.010525089479317004,
+      "coverage@10": 0.07548496605237634,
+      "users": 17813,
+      "fit_seconds": 1.03,
+      "score_seconds": 9.5,
+      "params": {
+        "factors": 128
+      }
+    },
+    {
+      "precision@10": 0.0034188514006624374,
+      "recall@10": 0.011803297061824963,
+      "ndcg@10": 0.007702517035004702,
+      "coverage@10": 0.07415130940834141,
+      "users": 17813,
+      "fit_seconds": 1.92,
+      "score_seconds": 9.93,
+      "params": {
+        "factors": 256
+      }
+    }
+  ]
+}

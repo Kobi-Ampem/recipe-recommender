@@ -1,0 +1,102 @@
+{
+  "dataset": "ml-1m",
+  "model": "puresvd",
+  "best": {
+    "precision@10": 0.0959933774834437,
+    "recall@10": 0.07939891498849384,
+    "ndcg@10": 0.11094112564441007,
+    "coverage@10": 0.2266594711279007,
+    "users": 6040,
+    "fit_seconds": 0.11,
+    "score_seconds": 0.33,
+    "params": {
+      "factors": 32
+    }
+  },
+  "runs": [
+    {
+      "precision@10": 0.09521523178807946,
+      "recall@10": 0.056779248928404906,
+      "ndcg@10": 0.106124162901205,
+      "coverage@10": 0.08526713437668645,
+      "users": 6040,
+      "fit_seconds": 0.03,
+      "score_seconds": 0.33,
+      "params": {
+        "factors": 4
+      }
+    },
+    {
+      "precision@10": 0.09778145695364239,
+      "recall@10": 0.06542019742891969,
+      "ndcg@10": 0.10998624105150853,
+      "coverage@10": 0.13032919589854292,
+      "users": 6040,
+      "fit_seconds": 0.06,
+      "score_seconds": 0.32,
+      "params": {
+        "factors": 8
+      }
+    },
+    {
+      "precision@10": 0.09622516556291391,
+      "recall@10": 0.0716884240866761,
+      "ndcg@10": 0.11028865533059412,
+      "coverage@10": 0.18186724230976795,
+      "users": 6040,
+      "fit_seconds": 0.09,
+      "score_seconds": 0.34,
+      "params": {
+        "factors": 16
+      }
+    },
+    {
+      "precision@10": 0.0959933774834437,
+      "recall@10": 0.07939891498849384,
+      "ndcg@10": 0.11094112564441007,
+      "coverage@10": 0.2266594711279007,
+      "users": 6040,
+      "fit_seconds": 0.11,
+      "score_seconds": 0.33,
+      "params": {
+        "factors": 32
+      }
+    },
+    {
+      "precision@10": 0.09134105960264902,
+      "recall@10": 0.07824426093694939,
+      "ndcg@10": 0.10719900299886523,
+      "coverage@10": 0.2830545062061522,
+      "users": 6040,
+      "fit_seconds": 0.17,
+      "score_seconds": 0.39,
+      "params": {
+        "factors": 64
+      }
+    },
+    {
+      "precision@10": 0.08796357615894039,
+      "recall@10": 0.07650386424541011,
+      "ndcg@10": 0.1034737721113174,
+      "coverage@10": 0.33729087965461413,
+      "users": 6040,
+      "fit_seconds": 0.65,
+      "score_seconds": 0.41,
+      "params": {
+        "factors": 128
+      }
+    },
+    {
+      "precision@10": 0.07963576158940397,
+      "recall@10": 0.07091175796419921,
+      "ndcg@10": 0.09582627425981195,
+      "coverage@10": 0.40744738262277386,
+      "users": 6040,
+      "fit_seconds": 0.7,
+      "score_seconds": 0.4,
+      "params": {
+        "factors": 256
+      }
+    }
+  ]
+}
