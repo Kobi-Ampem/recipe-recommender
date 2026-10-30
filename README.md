@@ -6,7 +6,7 @@ are compared under a time-based split, full-catalogue ranking and bootstrap conf
 
 **Recipe suggestions only, not dietary or medical advice.**
 
-![Demo: two banana breads picked, under 400 calories](docs/img/demo-picks.png)
+![Demo: banana bread and a cajun chicken pasta picked, under 600 calories; each suggestion names the pick behind it](docs/img/demo-picks.png)
 
 ## Results
 
@@ -65,7 +65,7 @@ Command-line suggestions without the demo:
 
 ```bash
 uv run python -m reciperec.recommend --search "banana bread"
-uv run python -m reciperec.recommend --like 25885 2886 --max-calories 400
+uv run python -m reciperec.recommend --like 25885 39087 --max-calories 600
 uv run python -m reciperec.recommend --min-protein-pdv 40 --max-minutes 30   # no picks: popular
 ```
 
@@ -121,7 +121,9 @@ Screenshots show a handful of recipe names and nutrition values for illustration
 **Nutrition limits** (`reciperec/nutrition.py`) remove recipes after ranking, so they never change
 the order of what is left. **Cold start** (`reciperec/recommend.py`): a new visitor picks a few
 recipes and item-kNN scores everything by similarity to them, with no retraining; with no picks
-they get popular recipes within their limits.
+they get popular recipes within their limits. **Explanations:** each suggestion names the pick
+that contributed most to its score and that pick's share, so a near even split is shown, not
+hidden.
 
 ## Limitations
 

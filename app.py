@@ -16,7 +16,7 @@ import pandas as pd
 import streamlit as st
 
 from reciperec.nutrition import Limits
-from reciperec.recommend import RecipeRecommender
+from reciperec.recommend import RecipeRecommender, tidy
 
 RUNS = Path(__file__).resolve().parent / "runs"
 LIMITS = {
@@ -35,7 +35,7 @@ COLUMNS = {
     "sodium_pdv": "Sodium %DV",
     "protein_pdv": "Protein %DV",
     "reviews": "Reviews",
-    "why": "Why",
+    "why": "Because you liked",
 }
 
 st.set_page_config(page_title="Recipe recommender", page_icon="🍲", layout="wide")
@@ -44,10 +44,6 @@ st.set_page_config(page_title="Recipe recommender", page_icon="🍲", layout="wi
 @st.cache_resource(show_spinner="Loading Food.com and building the recipe model (about 30 s)...")
 def load_model() -> RecipeRecommender:
     return RecipeRecommender()
-
-
-def tidy(name: str) -> str:
-    return " ".join(str(name).split()).capitalize()
 
 
 def query_floats(key: str) -> float | None:
@@ -103,20 +99,21 @@ if out.empty:
 else:
     shown = out[list(COLUMNS)].rename(columns=COLUMNS)
     shown["Recipe"] = shown["Recipe"].map(tidy)
-    shown["Why"] = shown["Why"].map({"similar to your picks": "your picks"}).fillna(shown["Why"])
-    shown.index = pd.RangeIndex(1, len(shown) + 1)
-    st.dataframe(
-        shown,
-        use_container_width=True,
-        column_config={
-            "Recipe": st.column_config.TextColumn(width=340),
-            "Why": st.column_config.TextColumn(width=90),
-            **{
-                c: st.column_config.NumberColumn(format="%.0f")
-                for c in ("Calories", "Sugar %DV", "Sodium %DV", "Protein %DV")
-            },
-        },
+    shown["Because you liked"] = (
+        shown["Because you liked"]
+        .str.replace("because you liked ", "", regex=False)
+        .str.replace(" more)", ")", regex=False)
+        .replace("popular", "(popular pick)")
     )
+    shown.index = pd.RangeIndex(1, len(shown) + 1)
+    for c in ("Calories", "Sugar %DV", "Sodium %DV", "Protein %DV"):
+        shown[c] = shown[c].round().astype(int)
+    st.table(shown)  # a plain table wraps long text instead of cutting it off
+    if picked:
+        st.caption(
+            "Because you liked: the pick that contributed most to each suggestion, with its share "
+            "of the score; +1 means another pick contributed too."
+        )
     if limit_values:
         st.caption(
             f"{len(out)} shown. Limits remove recipes after ranking; they never change the order."

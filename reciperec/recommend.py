@@ -33,6 +33,11 @@ from reciperec.split import to_csr
 TUNING = Path(__file__).resolve().parent.parent / "runs" / "tuning-foodcom-5core-itemknn.json"
 
 
+def tidy(name: str) -> str:
+    """Food.com names have stray spaces and are lower case."""
+    return " ".join(str(name).split()).capitalize()
+
+
 def cold_start_scores(sim: sp.csr_matrix, popularity: np.ndarray, liked: np.ndarray) -> np.ndarray:
     """Similarity to the liked items, popularity as a tie-break; liked items excluded."""
     pop = popularity / max(popularity.max(), 1)
@@ -45,6 +50,28 @@ def cold_start_scores(sim: sp.csr_matrix, popularity: np.ndarray, liked: np.ndar
         scores = scores + (picks @ sim).toarray().ravel()
         scores[liked] = -np.inf
     return scores
+
+
+def explain_picks(
+    sim: sp.csr_matrix, liked: np.ndarray, top: np.ndarray
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Why each recommended item scored: its main pick, that pick's share of the score, and
+    how many other picks contributed.
+
+    A recommendation's kNN score is the sum of sim[pick, item] over the picks, so the largest
+    term is the main reason and its share says how dominant it is. On Food.com similarities
+    are small and close, so a share near 50% is common and is shown rather than hidden.
+    Returns main -1 where no pick contributed (a popularity fill).
+    """
+    n = len(top)
+    if not len(liked) or not n:
+        return np.full(n, -1), np.zeros(n), np.zeros(n, dtype=int)
+    parts = sim[liked][:, top].toarray()  # picks x recommendations
+    total = parts.sum(axis=0)
+    main = np.where(total > 0, liked[parts.argmax(axis=0)], -1)
+    share = np.divide(parts.max(axis=0), total, out=np.zeros(n), where=total > 0)
+    others = np.maximum((parts > 0).sum(axis=0) - 1, 0)
+    return main, share, others
 
 
 class RecipeRecommender:
@@ -75,8 +102,14 @@ class RecipeRecommender:
         top = top[np.isfinite(scores[top]) & allowed[top]]  # fewer than k may pass the limits
         out = self.recipes.iloc[top].copy()
         out["score"] = scores[top]
-        out["why"] = "similar to your picks" if known else "popular"
-        out.loc[out["score"] < 1e-5, "why"] = "popular"
+        main, share, others = explain_picks(self.knn.sim, liked_idx, top)
+        out["why"] = [
+            "popular"
+            if m < 0
+            else f"because you liked {tidy(self.recipes['name'].iloc[m])}"
+            + (f" ({sh:.0%}, +{o} more)" if o else "")
+            for m, sh, o in zip(main, share, others)
+        ]
         return out, [r for r in liked if r not in known]
 
 
