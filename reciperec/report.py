@@ -1,4 +1,4 @@
-"""Build docs/results.md from the saved runs. Do not edit the output by hand.
+"""Build docs/results.md and the README results table from the saved runs.
 
 uv run python -m reciperec.report
 
@@ -138,6 +138,44 @@ def dataset_section(key: str, title: str) -> list[str]:
     return [*lines, ""]
 
 
+README_START, README_END = "<!-- results:start -->", "<!-- results:end -->"
+
+
+def readme_table() -> list[str]:
+    """Compact test table for the README: NDCG@10, gain over popularity, coverage."""
+    lines = [
+        "| Dataset | Model | NDCG@10 | vs popularity [95% CI] | Coverage@10 |",
+        "|---|---|---:|---:|---:|",
+    ]
+    for key, title in DATASETS:
+        run = load(RUNS_DIR / f"{key}.json")
+        if not run:
+            continue
+        for model in [m for m in ORDER if m in run["results"]]:
+            r = run["results"][model]
+            gain = ""
+            if "vs_popularity" in r:
+                v = r["vs_popularity"]
+                lo, hi = v["ci95"]
+                gain = f"{v['gain']:+.0%} [{lo:+.0%}, {hi:+.0%}]"
+            name = title.split(" (")[0]
+            lines.append(
+                f"| {name} | {NAMES[model]} | {r['ndcg@10']:.4f} | {gain} | {r['coverage@10']:.1%} |"
+            )
+    return lines
+
+
+def update_readme() -> None:
+    path = ROOT / "README.md"
+    text = path.read_text()
+    if README_START not in text:
+        return
+    head, rest = text.split(README_START, 1)
+    _, tail = rest.split(README_END, 1)
+    body = "\n".join(readme_table())
+    path.write_text(f"{head}{README_START}\n{body}\n{README_END}{tail}")
+
+
 def main() -> None:
     out = [
         "# Results",
@@ -157,6 +195,7 @@ def main() -> None:
     DOCS_DIR.mkdir(exist_ok=True)
     path = DOCS_DIR / "results.md"
     path.write_text("\n".join(out).rstrip() + "\n")
+    update_readme()
     print(path.read_text())
 
 
