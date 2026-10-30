@@ -1,0 +1,10 @@
+# Local demo only: listen on this machine, send no usage statistics.
+[server]
+address = "localhost"
+headless = true
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"  # no Deploy button
